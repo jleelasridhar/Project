@@ -1,3 +1,4 @@
+```mermaid
 graph TD
     %% Styling and Configuration
     %% Theme variables for a modern security platform look
@@ -81,3 +82,4 @@ graph TD
     Dash -.-> DB_Log & DB_Alert
     Invest -.-> DB_Log
     Rep --> DB_Rule
+```

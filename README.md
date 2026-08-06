@@ -97,7 +97,7 @@ graph LR
   %% Agent metadata & bookkeeping
   DB_Agent -->|agent metadata| DB_Log
   Rep -->|view/edit| DB_Agent
-
+```
   %% Legend
   subgraph Legend [ ]
     style Legend fill:none,stroke:none

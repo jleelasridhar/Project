@@ -1,9 +1,5 @@
 # RAMSRAN Security Platform — Architecture
 
-This README displays the canonical left-to-right architecture diagram. Agents (data sources) start on the left, and the Dashboard & UI are on the right to make the end-to-end flow obvious.
-
-Mermaid diagram (paste the same block as diagrams/architecture.mmd below so GitHub renders it directly):
-
 ```mermaid
 %% (Paste the entire contents of diagrams/architecture.mmd here)
 graph LR

@@ -1,7 +1,5 @@
-# RAMSRAN Security Platform — Architecture
-
 ```mermaid
-%% Paste the contents of diagrams/architecture.mmd here (or keep this block in-sync)
+%% Improved RAMSRAN Security Platform architecture (neat, clear, attractive)
 graph LR
   %% Layout hint
   classDef sourceStyle fill:#2c3e50,stroke:#18bc9c,stroke-width:2px,color:#ffffff;
@@ -102,5 +100,6 @@ graph LR
   end
   class NOTE noteStyle;
 
+  %% Positioning helpers (non-breaking, keeps center alignment)
   NOTE -.-> UI
 ```

@@ -1,5 +1,4 @@
-# Project
-# RAMSRAN Security Platform Architecture
+## RAMSRAN Security Platform Architecture
 
 ```mermaid
 %% RAMSRAN Security Platform — Left-to-right architecture (agents left, UI right)

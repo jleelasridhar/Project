@@ -2,20 +2,20 @@
 # RAMSRAN Security Platform Architecture
 
 ```mermaid
-%% RAMSRAN Security Platform architecture 
+%% RAMSRAN Security Platform — Left-to-right architecture (agents left, UI right)
 graph LR
-  %% Layout hint
+  %% Styles
   classDef sourceStyle fill:#2c3e50,stroke:#18bc9c,stroke-width:2px,color:#ffffff;
   classDef ingestStyle fill:#2d4263,stroke:#c84b31,stroke-width:2px,color:#ffffff;
   classDef dbStyle fill:#1a1a24,stroke:#a370f7,stroke-width:3px,color:#ffffff;
   classDef engineStyle fill:#0b3c5d,stroke:#328cc1,stroke-width:2px,color:#ffffff;
   classDef alertStyle fill:#3d1e22,stroke:#d9534f,stroke-width:2px,color:#ffffff;
   classDef uiStyle fill:#1d2731,stroke:#00a8cc,stroke-width:2px,color:#ffffff;
-  classDef futureStyle stroke-dasharray: 6 4, opacity:0.9, fill:#263242;
+  classDef futureStyle stroke-dasharray: 6 4, opacity:0.85, fill:#263242;
   classDef noteStyle fill:#ffffff,stroke:#cbd5e1,stroke-width:1px,color:#0b2436;
 
-  %% --- Data Sources (left) ---
-  subgraph Sources ["🔌 Data Sources"]
+  %% --- LEFT: Data Sources (Agents) ---
+  subgraph Sources ["🔌 Data Sources (Agents)"]
     direction TB
     Src_Lin[("🐧 Linux Agent")]
     Src_Win[("🪟 Windows Agent")]
@@ -25,8 +25,8 @@ graph LR
   class Src_Lin,Src_Win,Src_Mac,Src_Cloud sourceStyle;
   class Src_Cloud futureStyle;
 
-  %% --- Ingestion & Processing ---
-  subgraph Ingest ["📥 Ingestion & Processing"]
+  %% --- INGEST ---
+  subgraph Ingest ["📥 Ingestion"]
     direction TB
     Recv(("🌐 Receiver API"))
     Auth(("🔑 Auth & RBAC"))
@@ -34,8 +34,8 @@ graph LR
   end
   class Recv,Auth,Norm ingestStyle;
 
-  %% --- Central Data Store (center) ---
-  subgraph DataStore ["💾 Security Data Store"]
+  %% --- CENTRAL DATA STORE ---
+  subgraph DataStore ["💾 Data Store"]
     direction TB
     DB_Log(("📝 Logs DB"))
     DB_Alert(("⚠️ Alerts DB"))
@@ -45,8 +45,8 @@ graph LR
   end
   class DB_Log,DB_Alert,DB_Rule,DB_User,DB_Agent dbStyle;
 
-  %% --- Analytics Engine (right-center) ---
-  subgraph Engine ["🧠 Security Analytics Engine"]
+  %% --- ANALYTICS ENGINE ---
+  subgraph Engine ["🧠 Analytics Engine"]
     direction TB
     Detect(("🛡️ Detection Engine\n(Rule Matching)"))
     Correl(("🔄 Correlation Engine\n(Multi-event)"))
@@ -55,16 +55,16 @@ graph LR
   class Detect,Correl engineStyle;
   class AI futureStyle;
 
-  %% --- Alerting & Response (right) ---
-  subgraph Alerts ["🚨 Alert & Response Services"]
+  %% --- ALERTING & RESPONSES ---
+  subgraph Alerts ["🚨 Alerting & Response"]
     direction TB
     Gen(("💥 Alert Generation"))
     Notif(("🔔 Notification Service\n(Slack/Email)"))
   end
   class Gen,Notif alertStyle;
 
-  %% --- UI Layer (top-right) ---
-  subgraph UI ["🖥️ RAMSRAN UI"]
+  %% --- RIGHT: UI ---
+  subgraph UI ["🖥️ UI — Dashboard & Tools"]
     direction TB
     Dash(("📊 Dashboard & Visualization"))
     Invest(("🔍 Investigation & Search"))
@@ -72,13 +72,39 @@ graph LR
   end
   class Dash,Invest,Rep uiStyle;
 
-  %% --- Flows: sources -> ingest -> datastore -> engine -> alerts -> ui ---
-  Src_Lin & Src_Win & Src_Mac -->|secure transport| Recv
-  Src_Cloud -.->|future connectors| Recv
+  %% --- Flow arrows (left -> right) with labels ---
+  Src_Lin & Src_Win & Src_Mac -->|encrypted transport| Recv
+  Src_Cloud -.->|future connector| Recv
 
-  Recv -->|api auth| Auth -->|validated| Norm
+  Recv -->|validate API key / token| Auth
+  Auth -->|validated events| Norm
   Norm -->|normalized events| DB_Log
 
-  DB_Log ==> Detect
+  DB_Log ==>|stream / queries| Detect
   Detect <--> Correl
-```
+  Correl <--> AI
+
+  Detect -->|trigger alert| Gen
+  Gen -->|notify| Notif
+  Gen -->|persist alert| DB_Alert
+
+  %% UI on the right querying and managing data
+  Dash -->|visualize / query| DB_Log
+  Dash -->|view alerts| DB_Alert
+  Invest -->|search / export| DB_Log
+  Rep -->|create / edit rules| DB_Rule
+  Rep -->|manage users| DB_User
+
+  %% Agent metadata & bookkeeping
+  DB_Agent -->|agent metadata| DB_Log
+  Rep -->|view/edit| DB_Agent
+
+  %% Legend
+  subgraph Legend [ ]
+    style Legend fill:none,stroke:none
+    L1[[<b>Legend</b><br/>Solid arrows: primary flow<br/>Dashed arrows: future/optional<br/>==> double arrow: stream/high-throughput]]
+  end
+  class L1 noteStyle;
+
+  %% Position helper so legend sits near UI
+  L1 -.-> UI```

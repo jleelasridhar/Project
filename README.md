@@ -98,12 +98,4 @@ graph LR
   DB_Agent -->|agent metadata| DB_Log
   Rep -->|view/edit| DB_Agent
 ```
-  %% Legend
-  subgraph Legend [ ]
-    style Legend fill:none,stroke:none
-    L1[[<b>Legend</b><br/>Solid arrows: primary flow<br/>Dashed arrows: future/optional<br/>==> double arrow: stream/high-throughput]]
-  end
-  class L1 noteStyle;
-
-  %% Position helper so legend sits near UI
-  L1 -.-> UI```
+  
